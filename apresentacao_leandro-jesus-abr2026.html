@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EstrategAI × Leandro de Jesus — Campanha Federal 2026</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --p:#7c3aed;--pl:#a855f7;--pf:rgba(124,58,237,0.12);--pf2:rgba(124,58,237,0.06);
+  --bg:#08080f;--s:#111118;--s2:#1a1a24;--s3:#22222f;
+  --b:rgba(255,255,255,0.07);--b2:rgba(255,255,255,0.13);
+  --t:#f0f0ff;--m:#8888a8;--m2:#5a5a7a;
+  --g:#22c55e;--gf:rgba(34,197,94,0.1);--gb:rgba(34,197,94,0.2);
+  --r:#ef4444;--rf:rgba(239,68,68,0.08);--rb:rgba(239,68,68,0.2);
+  --y:#f59e0b
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--t);height:100vh;overflow:hidden;user-select:none}
+/* nav */
+#pb{position:fixed;top:0;left:0;height:2px;background:var(--pl);transition:width .4s ease;z-index:300;box-shadow:0 0 8px rgba(168,85,247,.6)}
+#sc{position:fixed;top:18px;right:22px;font-size:11px;color:var(--m);z-index:300;letter-spacing:.06em}
+.arr{position:fixed;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;background:var(--s2);border:1px solid var(--b);color:var(--m);cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:300;transition:all .2s;font-size:20px}
+.arr:hover{background:var(--pf);color:var(--pl);border-color:var(--p)}
+#pa{left:12px}#na{right:12px}
+#dots{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:300}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--b2);cursor:pointer;transition:all .3s}
+.dot.on{background:var(--pl);width:18px;border-radius:3px}
+/* slides */
+#wrap{width:100%;height:100vh;position:relative;overflow:hidden}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:50px 70px;opacity:0;transform:translateX(50px);transition:opacity .4s ease,transform .4s ease;pointer-events:none}
+.slide.on{opacity:1;transform:translateX(0);pointer-events:all}
+.slide.out{opacity:0;transform:translateX(-50px)}
+/* type */
+.lbl{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--pl);margin-bottom:12px}
+h1{font-size:clamp(32px,4.5vw,60px);font-weight:800;line-height:1.07}
+h2{font-size:clamp(24px,3vw,44px);font-weight:800;line-height:1.1}
+.hi{color:var(--pl)}.mu{color:var(--m)}.gr{color:var(--g)}.ye{color:var(--y)}
+/* layout */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:13px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}
+/* cards */
+.card{background:var(--s);border:1px solid var(--b);border-radius:13px;padding:18px}
+.card.glow{border-color:var(--p);background:rgba(124,58,237,.07)}
+/* badge */
+.bdg{display:inline-flex;align-items:center;padding:4px 12px;border-radius:100px;font-size:11px;font-weight:600}
+.bp{background:var(--pf);color:var(--pl);border:1px solid rgba(124,58,237,.3)}
+.bg{background:var(--gf);color:var(--g);border:1px solid var(--gb)}
+.br{background:var(--rf);color:var(--r);border:1px solid var(--rb)}
+/* lists */
+ul.ok{list-style:none;display:flex;flex-direction:column;gap:8px}
+ul.ok li{display:flex;gap:8px;align-items:flex-start;font-size:12px;line-height:1.4}
+ul.ok li::before{content:"✓";color:var(--g);font-weight:700;flex-shrink:0}
+ul.no li::before{content:"✕";color:var(--r)}
+ul.ok li.dim{color:var(--m)}
+ul.ok li.dim::before{color:var(--m2);content:"—"}
+/* stat */
+.sv{font-size:clamp(26px,3.5vw,50px);font-weight:800;line-height:1}
+.sl{font-size:12px;color:var(--m);margin-top:5px;line-height:1.4}
+.src{font-size:10px;color:rgba(255,255,255,.18);margin-top:5px}
+/* case card */
+.cc{background:var(--s);border:1px solid var(--b);border-radius:13px;padding:18px;display:flex;flex-direction:column;gap:8px}
+/* content type */
+.ct{background:var(--s);border:1px solid var(--b);border-radius:9px;padding:13px}
+.ct .ci{font-size:20px;margin-bottom:5px}
+.ct .cn{font-size:12px;font-weight:600}
+.ct .cq{font-size:11px;color:var(--pl)}
+.ct .cd{font-size:10px;color:var(--m);margin-top:3px;line-height:1.3}
+/* plan card */
+.plan{background:var(--s);border:1.5px solid var(--b);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:0;transition:border-color .2s}
+.plan.star{border-color:var(--p);background:linear-gradient(160deg,rgba(124,58,237,.1),rgba(124,58,237,.04))}
+.plan-tag{font-size:10px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px;font-weight:700}
+.plan-name{font-size:18px;font-weight:800;margin-bottom:3px}
+.plan-desc{font-size:11px;color:var(--m);margin-bottom:14px}
+.plan-sep{height:1px;background:var(--b);margin:14px 0}
+.plan-price-lbl{font-size:10px;color:var(--m);letter-spacing:.05em;margin-bottom:3px}
+.plan-price{font-size:28px;font-weight:800;line-height:1}
+.plan-price-sub{font-size:11px;color:var(--m);margin-top:3px}
+/* breakdown columns */
+.breakdown-col{background:var(--s);border:1.5px solid var(--b);border-radius:14px;padding:20px}
+.bc-header{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--b)}
+.bc-item{display:flex;flex-direction:column;gap:3px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.bc-item:last-child{border-bottom:none;padding-bottom:0}
+.bc-item-name{font-size:13px;font-weight:600}
+.bc-item-desc{font-size:11px;color:var(--m);line-height:1.4}
+.bc-item-price{font-size:12px;color:var(--pl);font-weight:600;margin-top:3px}
+/* onde vai */
+.ov-item{display:flex;gap:14px;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.ov-item:last-child{border-bottom:none;padding-bottom:0}
+.ov-dot{width:10px;height:10px;border-radius:50%;background:var(--p);flex-shrink:0;margin-top:4px}
+.ov-title{font-size:13px;font-weight:600;margin-bottom:3px}
+.ov-desc{font-size:11px;color:var(--m);line-height:1.5}
+.ov-price{font-size:13px;font-weight:700;color:var(--pl);margin-top:4px}
+/* shopping cart */
+.sc-card{background:var(--s);border:1.5px solid var(--b);border-radius:13px;padding:16px;cursor:pointer;transition:all .2s}
+.sc-card:hover{border-color:rgba(124,58,237,.4);background:var(--s2)}
+.sc-card.sel{border-color:var(--p);background:rgba(124,58,237,.09)}
+.sc-card .sn{font-size:13px;font-weight:600;margin-bottom:3px}
+.sc-card .sd{font-size:11px;color:var(--m);margin-bottom:9px;line-height:1.4}
+.sc-card .sp{font-size:11px}
+.sc-card .sp span{color:var(--pl);font-weight:600}
+.ck{font-size:15px;color:var(--b2);transition:color .2s;flex-shrink:0}
+.sel .ck{color:var(--pl)}
+/* step */
+.stp{display:flex;gap:16px;align-items:flex-start}
+.stn{width:36px;height:36px;border-radius:50%;background:var(--p);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0}
+/* divider */
+.hr{width:100%;height:1px;background:var(--b);margin:14px 0}
+/* bar */
+.pv{width:100%;height:6px;background:var(--s2);border-radius:3px;overflow:hidden}
+.pf{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--p),var(--pl))}
+/* note box */
+.note{padding:11px 14px;border-radius:9px;font-size:11px;line-height:1.5}
+.note-p{background:var(--pf);border:1px solid rgba(124,58,237,.25);color:var(--m)}
+.note-g{background:var(--gf);border:1px solid var(--gb);color:var(--m)}
+.note-r{background:var(--rf);border:1px solid var(--rb);color:var(--m)}
+.note-y{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);color:var(--m)}
+</style>
+</head>
+<body>
+<div id="pb"></div>
+<div id="sc">1 / 15</div>
+<div class="arr" id="pa" onclick="go(cur-1)">‹</div>
+<div class="arr" id="na" onclick="go(cur+1)">›</div>
+<div id="dots"></div>
+<div id="wrap">
+
+<!-- 0 CAPA -->
+<div class="slide on" style="background:radial-gradient(ellipse 55% 55% at 60% 40%,rgba(124,58,237,.18) 0%,transparent 70%)">
+  <div style="text-align:center;max-width:700px">
+    <div style="font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--m);margin-bottom:42px">ESTRATEGAI</div>
+    <div class="lbl">Apresentação comercial · Campanha 2026</div>
+    <h1 style="margin-bottom:20px">A máquina digital<br>da sua campanha <span class="hi">federal.</span></h1>
+    <p style="font-size:17px;color:var(--m);max-width:500px;margin:0 auto 34px;line-height:1.6">Conteúdo com IA · Tráfego pago segmentado · Central de engajamento 24h — tudo dentro das regras do TSE.</p>
+    <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap">
+      <div class="bdg bp">Dep. Leandro de Jesus · PL Bahia</div>
+      <div class="bdg bg">100% TSE Res. 23.755/2026</div>
+    </div>
+  </div>
+</div>
+
+<!-- 1 CONTEXTO -->
+<div class="slide">
+  <div style="width:100%;max-width:880px">
+    <div class="lbl">O contexto</div>
+    <h2 style="margin-bottom:26px">O eleitor conservador<br>baiano está <span class="hi">no digital.</span></h2>
+    <div class="g3" style="margin-bottom:14px">
+      <div class="card">
+        <div class="sv hi">R$ 350k+</div>
+        <div class="sl">Investimento médio em digital de candidatos eleitos (TSE 2022)</div>
+        <div class="src">TSE · DivulgaCandContas</div>
+      </div>
+      <div class="card">
+        <div class="sv hi">40%</div>
+        <div class="sl">Redução no custo por voto com marketing profissional (ABRAPEL)</div>
+        <div class="src">ABRAPEL · Relatório Eleições 2022</div>
+      </div>
+      <div class="card">
+        <div class="sv" style="color:var(--y)">R$1,2bi</div>
+        <div class="sl">investidos em publicidade digital nas eleições brasileiras de 2022</div>
+        <div class="src">TSE · Prestação de Contas Eleitorais 2022</div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div style="font-size:13px;font-weight:700;margin-bottom:10px">O problema sem estrutura digital</div>
+        <ul class="ok no" style="gap:8px">
+          <li>Eleitor pesquisa o candidato e não acha nada relevante</li>
+          <li>Apoiador manda mensagem e fica sem resposta</li>
+          <li>Verba impulsionada vai para quem não vota na região</li>
+          <li>Concorrente ocupa o espaço enquanto a campanha não existe online</li>
+        </ul>
+      </div>
+      <div class="card glow">
+        <div style="font-size:13px;font-weight:700;margin-bottom:10px">Com estrutura profissional</div>
+        <ul class="ok" style="gap:8px">
+          <li>Presença diária nas plataformas onde o eleitor está</li>
+          <li>Cada mensagem recebida tem resposta imediata</li>
+          <li>Verba de campanha vai para o eleitor certo, na região certa</li>
+          <li>Narrativa do candidato construída com consistência</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2 DESAFIO -->
+<div class="slide">
+  <div style="width:100%;max-width:860px">
+    <div class="lbl">O desafio</div>
+    <h2 style="margin-bottom:26px">De <span class="mu">39 mil</span> para <span class="hi">100 mil+</span> votos.</h2>
+    <div class="g2" style="gap:24px;margin-bottom:18px">
+      <div>
+        <div style="font-size:10px;color:var(--m);margin-bottom:9px;letter-spacing:.08em;text-transform:uppercase">Resultado 2022 — Estadual</div>
+        <div style="font-size:52px;font-weight:800;color:var(--m);line-height:1">39.206</div>
+        <div style="font-size:12px;color:var(--m);margin-top:5px">votos · Dep. Estadual · PL Bahia</div>
+        <div class="pv" style="margin-top:13px"><div class="pf" style="width:27%;background:rgba(255,255,255,.2)"></div></div>
+        <div style="font-size:10px;color:var(--m);margin-top:5px">≈ 27% da meta para federal</div>
+      </div>
+      <div>
+        <div style="font-size:10px;color:var(--pl);margin-bottom:9px;letter-spacing:.08em;text-transform:uppercase">Meta 2026 — Federal</div>
+        <div style="font-size:52px;font-weight:800;color:var(--pl);line-height:1">100k–200k</div>
+        <div style="font-size:12px;color:var(--m);margin-top:5px">votos · Dep. Federal · Bahia</div>
+        <div class="pv" style="margin-top:13px"><div class="pf" style="width:100%"></div></div>
+        <div style="font-size:10px;color:var(--m);margin-top:5px">Média histórica para cadeira federal na Bahia</div>
+      </div>
+    </div>
+    <div class="card glow">
+      <div style="display:flex;align-items:center;gap:16px">
+        <div style="font-size:42px;font-weight:800;color:var(--pl);flex-shrink:0">3–5×</div>
+        <div>
+          <div style="font-size:14px;font-weight:600;margin-bottom:5px">O salto é real — e a base conservadora está disponível</div>
+          <div style="font-size:12px;color:var(--m);line-height:1.5">Bahia tem 800k+ eleitores com perfil PL/conservador. Com apoio de Eduardo Bolsonaro e fundo robusto, todos os ingredientes existem. Falta o canal estruturado para alcançar esse eleitor de forma sistemática — com conteúdo diário, segmentação e engajamento real.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 3 CASES -->
+<div class="slide">
+  <div style="width:100%;max-width:940px">
+    <div class="lbl">Quem já fez isso</div>
+    <h2 style="margin-bottom:22px">Candidatos que apostaram<br>no digital — e <span class="hi">venceram.</span></h2>
+    <div class="g3" style="gap:13px;margin-bottom:13px">
+      <div class="cc">
+        <div style="font-size:26px">🇧🇷</div>
+        <div><div style="font-size:14px;font-weight:700">Jair Bolsonaro</div><div style="font-size:10px;color:var(--m)">Presidencial 2018</div></div>
+        <div style="font-size:32px;font-weight:800;color:var(--g)">57,8M</div>
+        <div style="font-size:10px;color:var(--m)">votos no 2º turno</div>
+        <div style="font-size:11px;color:var(--m);line-height:1.5">Primeiro candidato presidencial a vencer baseando a campanha em redes sociais e WhatsApp. Alcançou 9M de seguidores no Facebook sem comprar horário eleitoral.</div>
+        <div class="src">El País · "A campanha digital que elegeu Bolsonaro" · Out 2018</div>
+      </div>
+      <div class="cc" style="border-color:rgba(124,58,237,.4)">
+        <div style="font-size:26px">🇦🇷</div>
+        <div><div style="font-size:14px;font-weight:700">Javier Milei</div><div style="font-size:10px;color:var(--m)">Presidencial Argentina 2023</div></div>
+        <div style="font-size:32px;font-weight:800;color:var(--g)">55,7%</div>
+        <div style="font-size:10px;color:var(--m)">dos votos no 2º turno</div>
+        <div style="font-size:11px;color:var(--m);line-height:1.5">Outsider sem estrutura partidária. Estratégia YouTube-first com 3,2M inscritos. Conteúdo diário por 2 anos transformou visualizações em votos.</div>
+        <div class="src">La Nación · "La estrategia digital de Milei" · Nov 2023</div>
+      </div>
+      <div class="cc">
+        <div style="font-size:26px">🇺🇸</div>
+        <div><div style="font-size:14px;font-weight:700">Barack Obama</div><div style="font-size:10px;color:var(--m)">Presidencial EUA 2012</div></div>
+        <div style="font-size:32px;font-weight:800;color:var(--g)">$690M</div>
+        <div style="font-size:10px;color:var(--m)">arrecadados online</div>
+        <div style="font-size:11px;color:var(--m);line-height:1.5">Primeiro uso sistematizado de micro-targeting por região e perfil comportamental. 67% menor custo por apoiador vs. campanha sem segmentação.</div>
+        <div class="src">MIT Technology Review · "How Obama's Team Used Big Data" · 2013</div>
+      </div>
+    </div>
+    <div class="card" style="background:rgba(34,197,94,.04);border-color:var(--gb)">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="color:var(--g);font-size:16px">→</div>
+        <div style="font-size:12px;color:var(--m)">O padrão dos vencedores: <strong style="color:var(--t)">conteúdo consistente + segmentação inteligente + ponto de contato 24h.</strong> Não é tecnologia cara — é estratégia com disciplina aplicada todos os dias.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 4 TSE -->
+<div class="slide">
+  <div style="width:100%;max-width:880px">
+    <div class="lbl">Resolução TSE 23.755/2026</div>
+    <h2 style="margin-bottom:8px">As regras do jogo.<br><span class="hi">Quem as conhece tem vantagem.</span></h2>
+    <p style="font-size:12px;color:var(--m);margin-bottom:22px">A maioria dos fornecedores vai oferecer serviços proibidos sem saber — isso pode custar a candidatura.</p>
+    <div class="g2" style="gap:14px;margin-bottom:12px">
+      <div class="card" style="border-color:var(--gb)">
+        <div style="color:var(--g);font-weight:700;font-size:10px;letter-spacing:.12em;margin-bottom:12px">✓ PERMITIDO</div>
+        <ul class="ok" style="gap:7px">
+          <li>Criação de conteúdo com IA <span class="mu">(com rotulagem obrigatória)</span></li>
+          <li>Gestão profissional de redes sociais</li>
+          <li>Tráfego pago: Meta Ads, Google Ads, TikTok Ads</li>
+          <li>WhatsApp Broadcast — lista de transmissão</li>
+          <li>Assistente automático <strong>rotulado como campanha</strong></li>
+          <li>Analytics e dashboard de performance</li>
+          <li>Segmentação por região eleitoral</li>
+        </ul>
+      </div>
+      <div class="card" style="border-color:var(--rb)">
+        <div style="color:var(--r);font-weight:700;font-size:10px;letter-spacing:.12em;margin-bottom:12px">✕ PROIBIDO</div>
+        <ul class="ok no" style="gap:7px">
+          <li>Chatbot que <strong>simula ser o candidato</strong></li>
+          <li>Deepfakes com imagem ou voz do candidato</li>
+          <li>Perfis automatizados falsos nas redes</li>
+          <li>Conteúdo de IA sem rotulagem obrigatória</li>
+          <li>IA que recomenda candidatos automaticamente</li>
+          <li>Qualquer conteúdo novo nas 72h pré-eleição</li>
+        </ul>
+        <div class="note note-r" style="margin-top:12px">Penalidades: R$ 5k–30k de multa + cassação da candidatura + perda de mandato. <strong>Atenção:</strong> Proibido qualquer conteúdo novo com IA nas 72h pré-eleição.</div>
+      </div>
+    </div>
+    <div class="card glow" style="text-align:center">
+      <div style="font-size:13px">Nossa operação inclui <strong>Compliance de IA</strong>: rotulagem obrigatória em todas as peças e War Room humano para as últimas 72h.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- 5 WAR ROOM 72H -->
+<div class="slide">
+  <div style="width:100%;max-width:920px">
+    <div class="lbl">Segurança Crítica</div>
+    <h2 style="margin-bottom:20px">O War Room das <span class="hi">últimas 72 horas.</span></h2>
+    <div class="g2" style="gap:20px">
+      <div class="card" style="border-left:4px solid var(--r)">
+        <div style="font-size:16px;font-weight:700;margin-bottom:12px;color:var(--r)">🛡️ Gestão de Crise</div>
+        <p style="font-size:12px;color:var(--m);line-height:1.6;margin-bottom:12px">O período mais perigoso da campanha é o "apagão" da IA. Enquanto outros candidatos estarão vulneráveis a ataques e deepfakes, nossa equipe entra em modo manual integral.</p>
+        <ul class="ok" style="font-size:11px;gap:8px">
+          <li>Monitoramento de menções negativas 24/7</li>
+          <li>Produção de conteúdo "Real-Time" (100% humano)</li>
+          <li>Respostas rápidas a ataques e Fake News</li>
+          <li>Controle de danos em grupos de WhatsApp</li>
+        </ul>
+      </div>
+      <div class="card" style="border-left:4px solid var(--p)">
+        <div style="font-size:16px;font-weight:700;margin-bottom:12px;color:var(--pl)">⚖️ Blindagem Jurídica</div>
+        <p style="font-size:12px;color:var(--m);line-height:1.6;margin-bottom:12px">Garantimos que nenhum "bit" de IA seja publicado fora do prazo, evitando multas e riscos de cassação de última hora.</p>
+        <ul class="ok" style="font-size:11px;gap:8px">
+          <li>Pausa automática em campanhas de IA</li>
+          <li>Revisão jurídica manual de cada post</li>
+          <li>Relatório de transparência pós-pleito</li>
+          <li>Arquivamento de provas contra adversários</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note note-y" style="margin-top:16px;text-align:center">
+      <strong>Vantagem Estratégica:</strong> Ter uma equipe técnica dedicada nessas 72h permite que o candidato foque apenas em estar nas ruas, com a certeza de que sua imagem digital está protegida.
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <div style="width:100%;max-width:880px;text-align:center">
+    <div class="lbl">Nossa proposta</div>
+    <h2 style="margin-bottom:32px">4 pilares.<br><span class="hi">Uma campanha completa.</span></h2>
+    <div class="g4" style="text-align:left;margin-bottom:16px">
+      <div class="card" style="border-top:3px solid var(--p)">
+        <div style="font-size:28px;margin-bottom:9px">📱</div>
+        <div style="font-weight:700;margin-bottom:6px">Redes Sociais</div>
+        <div style="font-size:11px;color:var(--m)">Instagram, Facebook, TikTok e YouTube — presença diária com calendário editorial estratégico.</div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--p)">
+        <div style="font-size:28px;margin-bottom:9px">✨</div>
+        <div style="font-weight:700;margin-bottom:6px">Criação de Conteúdo</div>
+        <div style="font-size:11px;color:var(--m)">Posts, reels, vídeos e criativos com IA em parceria com o criativo — 30+ peças por mês.</div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--p)">
+        <div style="font-size:28px;margin-bottom:9px">🎯</div>
+        <div style="font-weight:700;margin-bottom:6px">Tráfego Pago</div>
+        <div style="font-size:11px;color:var(--m)">Meta, Google e TikTok Ads — cada real investido no eleitor certo, na região certa da Bahia.</div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--p)">
+        <div style="font-size:28px;margin-bottom:9px">💬</div>
+        <div style="font-weight:700;margin-bottom:6px">Central de Engajamento</div>
+        <div style="font-size:11px;color:var(--m)">WhatsApp + Instagram DM 24h — assistente de campanha rotulado, 100% dentro do TSE.</div>
+      </div>
+    </div>
+    <div class="g3">
+      <div style="text-align:center;padding:13px;background:var(--s);border-radius:10px;border:1px solid var(--b)">
+        <div style="font-size:20px;font-weight:800;color:var(--pl)">24h</div>
+        <div style="font-size:11px;color:var(--m)">de resposta automática</div>
+      </div>
+      <div style="text-align:center;padding:13px;background:var(--s);border-radius:10px;border:1px solid var(--b)">
+        <div style="font-size:20px;font-weight:800;color:var(--g)">100%</div>
+        <div style="font-size:11px;color:var(--m)">dentro das regras TSE</div>
+      </div>
+      <div style="text-align:center;padding:13px;background:var(--s);border-radius:10px;border:1px solid var(--b)">
+        <div style="font-size:20px;font-weight:800;color:var(--y)">3×</div>
+        <div style="font-size:11px;color:var(--m)">mais alcance por real investido</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- 7 TRÁFEGO + ENGAJAMENTO -->
+<div class="slide">
+  <div style="width:100%;max-width:940px">
+    <div class="lbl">Pilares — Distribuição e engajamento</div>
+    <h2 style="margin-bottom:20px">Chegar no eleitor certo.<br><span class="hi">E responder quando ele chama.</span></h2>
+    <div class="g2" style="gap:18px">
+      <div>
+        <div style="font-size:10px;letter-spacing:.1em;color:var(--pl);margin-bottom:11px;text-transform:uppercase;font-weight:700">🎯 Tráfego Pago Segmentado</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div class="card" style="border-left:3px solid #6897f2;padding:13px">
+            <div style="font-size:11px;font-weight:700;color:#6897f2;margin-bottom:7px">META ADS</div>
+            <ul class="ok" style="font-size:11px;gap:5px">
+              <li>Segmentação por cidade e bairro na Bahia</li><li>Perfil ideológico conservador</li><li>Retargeting e Lookalike de apoiadores</li>
+            </ul>
+          </div>
+          <div class="card" style="border-left:3px solid #7aadff;padding:13px">
+            <div style="font-size:11px;font-weight:700;color:#7aadff;margin-bottom:7px">GOOGLE ADS</div>
+            <ul class="ok" style="font-size:11px;gap:5px">
+              <li>Captura de quem pesquisa o nome</li><li>YouTube pre-roll no canal do candidato</li>
+            </ul>
+          </div>
+          <div class="card" style="border-left:3px solid #ff6688;padding:13px">
+            <div style="font-size:11px;font-weight:700;color:#ff6688;margin-bottom:7px">TIKTOK ADS</div>
+            <ul class="ok" style="font-size:11px;gap:5px">
+              <li>Base jovem 18–35 anos</li><li>Criativo nativo e A/B automatizado</li>
+            </ul>
+          </div>
+        </div>
+        <div class="note note-g" style="margin-top:8px"><strong style="color:var(--t)">67% menor</strong> custo por eleitor com micro-targeting vs. impulsionamento genérico.<div class="src" style="margin-top:4px">Meta Political Advertising Benchmark 2024</div></div>
+      </div>
+      <div>
+        <div style="font-size:10px;letter-spacing:.1em;color:var(--pl);margin-bottom:11px;text-transform:uppercase;font-weight:700">💬 Central de Engajamento 24h</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div class="card" style="padding:14px">
+            <div style="font-weight:600;font-size:12px;margin-bottom:7px">WhatsApp Broadcast</div>
+            <ul class="ok" style="font-size:11px;gap:5px">
+              <li>Lista de transmissão para apoiadores</li><li>Novidades da campanha e agenda</li><li>FAQ automático sobre propostas</li><li>Mobilização para atos e eventos</li>
+            </ul>
+          </div>
+          <div class="card" style="padding:14px">
+            <div style="font-weight:600;font-size:12px;margin-bottom:7px">Instagram DM Automático</div>
+            <ul class="ok" style="font-size:11px;gap:5px">
+              <li>Resposta imediata para novos seguidores</li><li>Perguntas frequentes respondidas 24h</li><li>Convite para lista do WhatsApp</li>
+            </ul>
+          </div>
+          <div class="note note-p">
+            <strong style="color:var(--t)">78%</strong> dos eleitores esperam resposta em 24h de contas políticas.
+            <div class="src" style="margin-top:4px">Sprout Social Political Index 2024</div>
+          </div>
+          <div class="note note-r">
+            O assistente nunca simula ser o candidato — sempre identificado como assistente da campanha. <strong style="color:var(--r)">Conforme TSE.</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- 8 SPRINT ELEITORAL -->
+<div class="slide">
+  <div style="width:100%;max-width:880px">
+    <div class="lbl">Cronograma Estratégico</div>
+    <h2 style="margin-bottom:20px">A jornada até a <span class="hi">vitória.</span></h2>
+    <div class="g3" style="gap:14px">
+      <div class="card" style="border-top:3px solid var(--m)">
+        <div style="font-size:11px;font-weight:700;color:var(--m);margin-bottom:8px">ABRIL - JUNHO</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:6px">Construção de Base</div>
+        <div style="font-size:11px;color:var(--m);line-height:1.4">Foco em autoridade e reconhecimento. Produção de vídeos de valores, biografia e propostas. Crescimento orgânico e tráfego de topo de funil.</div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--p)">
+        <div style="font-size:11px;font-weight:700;color:var(--pl);margin-bottom:8px">JULHO - AGOSTO</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:6px">Engajamento & Alcance</div>
+        <div style="font-size:11px;color:var(--m);line-height:1.4">Aumento do volume de Reels e Shorts. Ativação agressiva da Central de WhatsApp. Segmentação por cidades-chave na Bahia.</div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--g)">
+        <div style="font-size:11px;font-weight:700;color:var(--g);margin-bottom:8px">SETEMBRO - OUTUBRO</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:6px">Conversão em Voto</div>
+        <div style="font-size:11px;color:var(--m);line-height:1.4">Foco total em mobilização. Vídeos de "Como votar" e "Agenda". War Room de resposta rápida e tráfego de fundo de funil.</div>
+      </div>
+    </div>
+    <div class="note note-p" style="margin-top:16px">
+      <strong>Pensamento de Abordagem:</strong> À medida que a eleição se aproxima, a comunicação transita do "Quem eu sou" para o "Por que você deve me escolher" e, finalmente, para o "Ação no dia do voto".
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <div style="width:100%;max-width:960px">
+    <div class="lbl">Opções de contratação</div>
+    <h2 style="margin-bottom:8px">Três planos.<br><span class="hi">Uma recomendação.</span></h2>
+    <p style="font-size:12px;color:var(--m);margin-bottom:20px">Cada plano tem um valor de setup único (configuração inicial) + mensalidade de gestão contínua.</p>
+    <div class="g3" style="gap:14px">
+
+      <!-- ESSENCIAL -->
+      <div class="plan">
+        <div class="plan-tag" style="color:var(--m)">ESSENCIAL</div>
+        <div class="plan-name">Presença ativa</div>
+        <div class="plan-desc">Para começar com o básico essencial funcionando</div>
+        <div class="plan-sep"></div>
+        <div class="plan-price-lbl">SETUP (ÚNICO)</div>
+        <div class="plan-price mu">R$ 8.500</div>
+        <div class="plan-price-sub">Configuração e primeiro mês</div>
+        <div class="plan-sep"></div>
+        <div class="plan-price-lbl">MENSALIDADE</div>
+        <div class="plan-price mu" style="font-size:22px">R$ 2.900<span style="font-size:14px;color:var(--m)">/mês</span></div>
+        <div class="plan-sep"></div>
+        <ul class="ok" style="gap:6px;font-size:11px">
+          <li>Gestão Instagram + Facebook</li>
+          <li>Calendário editorial quinzenal com IA</li>
+          <li>Central de Engajamento WhatsApp básica</li>
+          <li>1 plataforma de ads (Meta Ads)</li>
+          <li>Relatório mensal de performance</li>
+          <li class="dim">TikTok e YouTube</li>
+          <li class="dim">Google Ads e TikTok Ads</li>
+          <li class="dim">Instagram DM automático</li>
+          <li class="dim">Dashboard semanal</li>
+        </ul>
+      </div>
+
+      <!-- COMPLETO -->
+      <div class="plan star">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div class="plan-tag hi">COMPLETO</div>
+          <div class="bdg bp" style="font-size:10px">⭐ Recomendado</div>
+        </div>
+        <div class="plan-name hi">Campanha completa</div>
+        <div class="plan-desc">Tudo funcionando — conteúdo, tráfego e engajamento</div>
+        <div class="plan-sep"></div>
+        <div class="plan-price-lbl">SETUP (ÚNICO)</div>
+        <div class="plan-price hi">R$ 15.000</div>
+        <div class="plan-price-sub">Configuração completa de todos os serviços</div>
+        <div class="plan-sep"></div>
+        <div class="plan-price-lbl">MENSALIDADE</div>
+        <div class="plan-price hi" style="font-size:22px">R$ 5.500<span style="font-size:14px;color:var(--m)">/mês</span></div>
+        <div class="plan-sep"></div>
+        <ul class="ok" style="gap:6px;font-size:11px">
+          <li>Gestão Instagram, Facebook, TikTok e YouTube</li>
+          <li>Calendário editorial semanal com IA</li>
+          <li>30+ peças de conteúdo por mês</li>
+          <li>Tráfego pago: Meta + Google + TikTok Ads</li>
+          <li>Central de Engajamento WhatsApp + Instagram DM</li>
+          <li>Segmentação por região eleitoral na Bahia</li>
+          <li>Dashboard semanal + relatório quinzenal</li>
+          <li>A/B de criativos com otimização automática</li>
+        </ul>
+      </div>
+
+      <!-- PREMIUM -->
+      <div class="plan">
+        <div class="plan-tag" style="color:var(--pl)">PREMIUM</div>
+        <div class="plan-name">Máquina completa</div>
+        <div class="plan-desc">Para escalar com consultoria estratégica semanal</div>
+        <div class="plan-sep"></div>
+        <div class="plan-price-lbl">SETUP (ÚNICO)</div>
+        <div class="plan-price mu">R$ 20.000</div>
+        <div class="plan-price-sub">Inclui produção de vídeos e integrações avançadas</div>
+        <div class="plan-sep"></div>
+        <div class="plan-price-lbl">MENSALIDADE</div>
+        <div class="plan-price mu" style="font-size:22px">R$ 6.900<span style="font-size:14px;color:var(--m)">/mês</span></div>
+        <div class="plan-sep"></div>
+        <ul class="ok" style="gap:6px;font-size:11px">
+          <li>Tudo do Completo</li>
+          <li>Produção de vídeos com IA (YouTube/TikTok)</li>
+          <li>Consultoria estratégica semanal de campanha</li>
+          <li>Criativos ilimitados por mês</li>
+          <li>Otimização de budget em tempo real</li>
+          <li>Projeção eleitoral por município</li>
+          <li>Suporte prioritário — resposta em até 1h</li>
+          <li>Reunião semanal de estratégia</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- 9 MENSALIDADE: CRIAÇÃO VS AUTOMAÇÃO -->
+<div class="slide">
+  <div style="width:100%;max-width:960px">
+    <div class="lbl">Detalhamento da mensalidade</div>
+    <h2 style="margin-bottom:8px">O que está dentro<br>dos <span class="hi">R$ 5.500/mês.</span></h2>
+    <p style="font-size:12px;color:var(--m);margin-bottom:20px">A mensalidade do Plano Completo é dividida em dois blocos de serviços com lógicas diferentes. Abaixo, o que cada bloco cobre.</p>
+    <div class="g2" style="gap:18px;margin-bottom:14px">
+
+      <!-- CRIAÇÃO DE CONTEÚDO -->
+      <div class="breakdown-col" style="border-color:rgba(168,85,247,.3)">
+        <div class="bc-header" style="color:var(--pl)">
+          ✨ CRIAÇÃO DE CONTEÚDO
+          <div style="font-size:18px;font-weight:800;color:var(--pl);margin-top:5px">R$ 3.500<span style="font-size:12px;font-weight:400;color:var(--m)">/mês</span></div>
+        </div>
+        <div class="bc-item">
+          <div class="bc-item-name">Edição de Vídeo & Social Media</div>
+          <div class="bc-item-desc">Edição profissional de Reels/Shorts, design de posts, legendas e agendamento em todas as redes. Valor justificado pela economia de ~R$ 8k/mês em relação à contratação de uma equipe interna de edição e gestão.</div>
+        </div>
+        <div class="bc-item">
+          <div class="bc-item-name">Estratégia e pauta semanal</div>
+          <div class="bc-item-desc">Pauta semanal baseada na agenda política, temas prioritários e comportamento da audiência. Calendário com todas as peças planejadas com antecedência.</div>
+        </div>
+        <div class="bc-item">
+          <div class="bc-item-name">Copy e roteiros com IA</div>
+          <div class="bc-item-desc">Legendas, roteiros de vídeo, scripts para stories e textos de anúncio — todos produzidos com ferramentas de IA e revisados pela equipe.</div>
+        </div>
+        <div class="bc-item">
+          <div class="bc-item-name">Publicação e agendamento</div>
+          <div class="bc-item-desc">Agendamento e publicação de todo o conteúdo nas plataformas no melhor horário para a audiência do Leandro.</div>
+        </div>
+        <div class="bc-item">
+          <div class="bc-item-name">Licenças de ferramentas IA</div>
+          <div class="bc-item-desc">Canva Pro, CapCut Pro, ferramentas de IA para copy e imagem — já inclusos. Sem custo adicional de software.</div>
+        </div>
+        <div class="note note-y" style="margin-top:12px">
+          <strong style="color:var(--y)">Produção visual não inclusa:</strong> fotos e vídeos do candidato são realizados pelo criativo parceiro e cotados separadamente conforme o volume e a pauta.
+        </div>
+      </div>
+
+      <!-- AUTOMAÇÃO -->
+      <div class="breakdown-col" style="border-color:rgba(34,197,94,.25)">
+        <div class="bc-header" style="color:var(--g)">
+          ⚙️ AUTOMAÇÃO & DISTRIBUIÇÃO
+          <div style="font-size:18px;font-weight:800;color:var(--g);margin-top:5px">R$ 2.000<span style="font-size:12px;font-weight:400;color:var(--m)">/mês</span></div>
+        </div>
+        <div class="bc-item">
+          <div class="bc-item-name">Gestão de tráfego pago</div>
+          <div class="bc-item-desc">Otimização semanal das campanhas Meta Ads, Google Ads e TikTok Ads — ajuste de segmentações, criativos e alocação de budget para o que converte.</div>
+        </div>
+        <div class="bc-item">
+          <div class="bc-item-name">Central de Engajamento</div>
+          <div class="bc-item-desc">Manutenção e atualização das respostas automáticas no WhatsApp e Instagram DM — FAQ sempre atualizado com novas pautas e eventos da campanha.</div>
+        </div>
+        <div class="bc-item">
+          <div class="bc-item-name">Dashboard + Analytics</div>
+          <div class="bc-item-desc">Atualização do painel semanal e elaboração do relatório quinzenal com análise de performance e recomendações estratégicas.</div>
+        </div>
+        <div class="bc-item">
+          <div class="bc-item-name">Reunião de estratégia mensal</div>
+          <div class="bc-item-desc">Uma reunião por mês para revisar os resultados, ajustar a estratégia e alinhar as próximas ações com a equipe de campanha.</div>
+        </div>
+        <div class="note note-r" style="margin-top:12px">
+          <strong style="color:var(--r)">Verba de anúncios não inclusa:</strong> o dinheiro que vai para Meta, Google e TikTok é pago diretamente pelo candidato — não passa pela EstrategAI. Esse valor é 100% investido em anúncios.
+        </div>
+      </div>
+
+    </div>
+    <div class="card" style="background:rgba(124,58,237,.06);border-color:rgba(124,58,237,.25);display:flex;justify-content:space-between;align-items:center;gap:20px">
+      <div style="font-size:13px">Investimento em 2 Especialistas: <strong style="color:var(--pl)">R$ 3.500 (Conteúdo) + R$ 2.000 (Automação) = R$ 5.500/mês</strong></div>
+      <div style="font-size:11px;color:var(--m);flex-shrink:0;text-align:right">Equivalente a menos de 50% do custo de<br>um único funcionário CLT especializado</div>
+    </div>
+  </div>
+</div>
+
+<!-- 10 ONDE VAI O DINHEIRO -->
+<div class="slide">
+  <div style="width:100%;max-width:960px">
+    <div class="lbl">Transparência total</div>
+    <h2 style="margin-bottom:8px">Onde vai o<br><span class="hi">R$ 15.000 de setup.</span></h2>
+    <p style="font-size:12px;color:var(--m);margin-bottom:18px">O setup é o investimento de configuração — feito uma vez só. Abaixo, exatamente o que está sendo construído com esse valor.</p>
+    <div class="g2" style="gap:14px">
+      <div>
+        <div class="ov-item" style="padding-top:0">
+          <div class="ov-dot"></div>
+          <div>
+            <div class="ov-title">💬 Central de Engajamento</div>
+            <div class="ov-desc">Desenvolvimento completo do assistente automático para WhatsApp e Instagram DM. Inclui: fluxos de conversa, base de conhecimento do candidato (propostas, agenda, biografia), integração com WhatsApp Business API e Instagram Graph API, testes e treinamento inicial do sistema.</div>
+            <div class="ov-price">R$ 3.500</div>
+          </div>
+        </div>
+        <div class="ov-item">
+          <div class="ov-dot"></div>
+          <div>
+            <div class="ov-title">🎯 Setup de Tráfego Pago</div>
+            <div class="ov-desc">Configuração completa das três contas de anúncio: Meta Business Manager, Google Ads e TikTok Ads. Inclui: instalação de pixels de rastreamento, criação dos públicos segmentados por região eleitoral na Bahia, configuração de conversões e ativação das primeiras campanhas.</div>
+            <div class="ov-price">R$ 4.500</div>
+          </div>
+        </div>
+        <div class="ov-item">
+          <div class="ov-dot"></div>
+          <div>
+            <div class="ov-title">✨ Primeiro Lote de Conteúdo</div>
+            <div class="ov-desc">Produção do conteúdo inaugural da campanha digital: primeiros posts, stories, roteiros para reels e criativos para anúncios. Estabelece o tom de voz e a identidade visual da comunicação online do Leandro.</div>
+            <div class="ov-price">R$ 2.500</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="ov-item" style="padding-top:0">
+          <div class="ov-dot"></div>
+          <div>
+            <div class="ov-title">🧭 Estratégia e Posicionamento</div>
+            <div class="ov-desc">Auditoria da presença digital atual, análise de concorrentes, definição da estratégia de comunicação para a campanha federal, mapeamento de pautas prioritárias e elaboração do FAQ completo para a Central de Engajamento.</div>
+            <div class="ov-price">R$ 2.000</div>
+          </div>
+        </div>
+        <div class="ov-item">
+          <div class="ov-dot"></div>
+          <div>
+            <div class="ov-title">📊 Dashboard + Analytics</div>
+            <div class="ov-desc">Desenvolvimento do painel de performance personalizado para a campanha: configuração das métricas-chave, integração das plataformas (Meta, Google, TikTok, Instagram), layout do relatório quinzenal e acesso da equipe.</div>
+            <div class="ov-price">R$ 1.000</div>
+          </div>
+        </div>
+        <div class="ov-item">
+          <div class="ov-dot"></div>
+          <div>
+            <div class="ov-title">⚙️ Integração e Configuração Técnica</div>
+            <div class="ov-desc">Horas de configuração técnica: integrações entre plataformas, automações de agendamento, testes de qualidade em todos os sistemas e treinamento da equipe de campanha para uso das ferramentas.</div>
+            <div class="ov-price">R$ 1.500</div>
+          </div>
+        </div>
+        <div style="margin-top:12px;padding:12px 16px;background:var(--pf);border:1px solid rgba(124,58,237,.25);border-radius:10px;display:flex;justify-content:space-between;align-items:center">
+          <div style="font-size:12px;color:var(--m)">Total do setup</div>
+          <div style="font-size:22px;font-weight:800;color:var(--pl)">R$ 15.000</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 11 SHOPPING CART (REORDENADO) -->
+<div class="slide">
+  <div style="width:100%;max-width:980px">
+    <div class="lbl">Monte sua campanha</div>
+    <h2 style="margin-bottom:6px"><span class="hi">Escolha</span> o que faz sentido agora.</h2>
+    <p style="font-size:11px;color:var(--m);margin-bottom:16px">Selecione os serviços — o total atualiza automaticamente · Todos os valores são de setup único</p>
+    <div style="display:flex;gap:16px;align-items:flex-start">
+      <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:9px">
+        <div class="sc-card" data-setup="2500" data-monthly="2500" onclick="tog(this)">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div class="sn">📱 Edição de Vídeo & Social Media</div><div class="ck">○</div>
+          </div>
+          <div class="sd">Instagram, Facebook, TikTok e YouTube — edição de Reels e calendário</div>
+          <div class="sp">Setup: <span>R$ 2.500</span> · Mensal: <span>R$ 2.500/mês</span></div>
+        </div>
+        <div class="sc-card" data-setup="3500" data-monthly="1500" onclick="tog(this)">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div class="sn">✨ Criação de Conteúdo Estratégico</div><div class="ck">○</div>
+          </div>
+          <div class="sd">30+ peças/mês: posts, scripts, roteiros e criativos com IA</div>
+          <div class="sp">Setup: <span>R$ 3.500</span> · Mensal: <span>R$ 1.500/mês</span></div>
+        </div>
+        <div class="sc-card" data-setup="3500" data-monthly="1000" onclick="tog(this)">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div class="sn">🎯 Tráfego Pago Segmentado</div><div class="ck">○</div>
+          </div>
+          <div class="sd">Meta + Google + TikTok Ads — segmentação eleitoral por região</div>
+          <div class="sp">Setup: <span>R$ 3.500</span> · Gestão: <span>R$ 1.000/mês</span></div>
+        </div>
+        <div class="sc-card" data-setup="4500" data-monthly="500" onclick="tog(this)">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div class="sn">💬 Central de Engajamento</div><div class="ck">○</div>
+          </div>
+          <div class="sd">WhatsApp + Instagram DM — FAQ automático 24h dentro das regras TSE</div>
+          <div class="sp">Setup: <span>R$ 4.500</span> · Mensal: <span>R$ 500/mês</span></div>
+        </div>
+        <div class="sc-card" data-setup="1000" data-monthly="0" onclick="tog(this)" style="grid-column:span 2">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div class="sn">📊 Analytics + Dashboard de Campanha</div><div class="ck">○</div>
+          </div>
+          <div class="sd">Painel semanal + relatório quinzenal com análise estratégica e reunião mensal</div>
+          <div class="sp">Setup: <span>R$ 1.000</span> · Mensal: <span>Grátis</span></div>
+        </div>
+      </div>
+      <div style="background:var(--s2);border:1px solid var(--b);border-radius:13px;padding:20px;min-width:230px">
+        <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--m);margin-bottom:14px">Seu resumo</div>
+        <div style="margin-bottom:12px">
+          <div style="font-size:10px;color:var(--m);margin-bottom:2px">Setup (único)</div>
+          <div style="font-size:28px;font-weight:800" id="ts">R$ 0</div>
+        </div>
+        <div style="margin-bottom:12px">
+          <div style="font-size:10px;color:var(--m);margin-bottom:2px">Gestão mensal</div>
+          <div style="font-size:26px;font-weight:800" id="tm">R$ 0<span style="font-size:13px;color:var(--m)">/mês</span></div>
+        </div>
+        <div class="hr" style="margin:12px 0"></div>
+        <div>
+          <div style="font-size:10px;color:var(--m);margin-bottom:2px">Acumulado em 6 meses</div>
+          <div style="font-size:18px;font-weight:700;color:var(--m)" id="t6">R$ 0</div>
+        </div>
+        <div id="bh" style="display:none;margin-top:12px;padding:13px;background:linear-gradient(135deg,rgba(124,58,237,.2),rgba(168,85,247,.08));border:1.5px solid var(--p);border-radius:10px">
+          <div style="font-size:9px;color:var(--pl);font-weight:700;margin-bottom:5px">💡 BUNDLE RECOMENDADO</div>
+          <div style="font-size:13px;font-weight:700;margin-bottom:2px">
+            <div class="plan-tag hi">COMPLETO</div>
+          </div>
+          <div style="font-size:19px;font-weight:800;color:var(--pl)">R$ 15.000</div>
+          <div style="font-size:10px;color:var(--m);margin-top:2px">+ R$ 5.500/mês</div>
+          <div style="margin-top:8px;padding:6px;background:rgba(34,197,94,.12);border-radius:6px;font-size:10px;color:var(--g);text-align:center" id="bs">Todos os serviços inclusos</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- 13 CENÁRIOS DE INVESTIMENTO EM TRÁFEGO -->
+<div class="slide">
+  <div style="width:100%;max-width:960px">
+    <div class="lbl">Investimento em tráfego pago</div>
+    <h2 style="margin-bottom:8px">3 cenários para você<br>entender a <span class="hi">escalabilidade.</span></h2>
+    <p style="font-size:12px;color:var(--m);margin-bottom:24px">O investimento em anúncios é separado — você define quanto quer gastar com Meta, Google e TikTok. Aqui estão 3 opções comuns para campanhas federais na Bahia.</p>
+    
+    <div class="g3" style="gap:14px">
+      <!-- CENÁRIO ENXUTO -->
+      <div class="plan">
+        <div class="plan-tag mu">ENXUTO</div>
+        <div class="plan-name">Presença sem escala</div>
+        <div class="plan-desc">Para começar e validar mensagens</div>
+        <div class="plan-sep"></div>
+        
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div>
+            <div style="font-size:9px;color:var(--m);letter-spacing:.05em;text-transform:uppercase;margin-bottom:2px">Investimento mensal</div>
+            <div style="font-size:32px;font-weight:800;color:var(--y)">R$ 5.000</div>
+            <div style="font-size:10px;color:var(--m);margin-top:3px">por mês em tráfego</div>
+          </div>
+          
+          <div style="background:var(--s2);border-radius:10px;padding:12px;border:1px solid var(--b)">
+            <div style="font-size:10px;color:var(--m);margin-bottom:8px">Acumulado em 6 meses</div>
+            <div style="font-size:22px;font-weight:800">R$ 30.000</div>
+          </div>
+        </div>
+        
+        <div class="plan-sep"></div>
+        
+        <div style="font-size:11px;color:var(--m);line-height:1.6">
+          <div style="font-weight:600;color:var(--t);margin-bottom:8px">Alcance estimado na Bahia:</div>
+          <strong style="color:var(--y)">400k–600k</strong> impressões mensais · Gerado 25–40 leads qualificados por dia
+        </div>
+        
+        <ul class="ok" style="gap:5px;font-size:10px;margin-top:10px">
+          <li>Meta Ads: R$ 3.000</li>
+          <li>Google Ads: R$ 1.200</li>
+          <li>TikTok Ads: R$ 800</li>
+        </ul>
+        
+        <div class="note note-y" style="margin-top:10px;font-size:10px">
+          Ideal para testar posicionamento e refinar mensagens antes de escalar.
+        </div>
+      </div>
+      
+      <!-- CENÁRIO EQUILIBRADO -->
+      <div class="plan star">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <div class="plan-tag hi">EQUILIBRADO</div>
+          <div class="bdg bp" style="font-size:9px">★ Padrão</div>
+        </div>
+        <div class="plan-name hi">Cobertura regional</div>
+        <div class="plan-desc">Alcance consistente em toda Bahia</div>
+        <div class="plan-sep"></div>
+        
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div>
+            <div style="font-size:9px;color:var(--m);letter-spacing:.05em;text-transform:uppercase;margin-bottom:2px">Investimento mensal</div>
+            <div style="font-size:32px;font-weight:800;color:var(--pl)">R$ 15.000</div>
+            <div style="font-size:10px;color:var(--m);margin-top:3px">por mês em tráfego</div>
+          </div>
+          
+          <div style="background:linear-gradient(135deg,rgba(124,58,237,.15),rgba(168,85,247,.05));border-radius:10px;padding:12px;border:1.5px solid var(--p)">
+            <div style="font-size:10px;color:var(--m);margin-bottom:8px">Acumulado em 6 meses</div>
+            <div style="font-size:22px;font-weight:800;color:var(--pl)">R$ 90.000</div>
+          </div>
+        </div>
+        
+        <div class="plan-sep"></div>
+        
+        <div style="font-size:11px;color:var(--m);line-height:1.6">
+          <div style="font-weight:600;color:var(--t);margin-bottom:8px">Alcance estimado na Bahia:</div>
+          <strong style="color:var(--pl)">1.5M–2.5M</strong> impressões mensais · Gerado 150–250 leads qualificados por dia
+        </div>
+        
+        <ul class="ok" style="gap:5px;font-size:10px;margin-top:10px">
+          <li>Meta Ads: R$ 9.000</li>
+          <li>Google Ads: R$ 3.500</li>
+          <li>TikTok Ads: R$ 2.500</li>
+        </ul>
+        
+        <div class="note note-p" style="margin-top:10px;font-size:10px">
+          <strong style="color:var(--pl)">Recomendado</strong> para campanhas federais com base conservadora distribuída na Bahia.
+        </div>
+      </div>
+      
+      <!-- CENÁRIO AGRESSIVO -->
+      <div class="plan">
+        <div class="plan-tag mu">AGRESSIVO</div>
+        <div class="plan-name">Saturação de marca</div>
+        <div class="plan-desc">Domínio total do digital local</div>
+        <div class="plan-sep"></div>
+        
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div>
+            <div style="font-size:9px;color:var(--m);letter-spacing:.05em;text-transform:uppercase;margin-bottom:2px">Investimento mensal</div>
+            <div style="font-size:32px;font-weight:800;color:var(--r)">R$ 40.000</div>
+            <div style="font-size:10px;color:var(--m);margin-top:3px">por mês em tráfego</div>
+          </div>
+          
+          <div style="background:var(--s2);border-radius:10px;padding:12px;border:1px solid var(--b)">
+            <div style="font-size:10px;color:var(--m);margin-bottom:8px">Acumulado em 6 meses</div>
+            <div style="font-size:22px;font-weight:800">R$ 240.000</div>
+          </div>
+        </div>
+        
+        <div class="plan-sep"></div>
+        
+        <div style="font-size:11px;color:var(--m);line-height:1.6">
+          <div style="font-weight:600;color:var(--t);margin-bottom:8px">Alcance estimado na Bahia:</div>
+          <strong style="color:var(--r)">5M–8M</strong> impressões mensais · Gerado 500+ leads qualificados por dia
+        </div>
+        
+        <ul class="ok" style="gap:5px;font-size:10px;margin-top:10px">
+          <li>Meta Ads: R$ 25.000</li>
+          <li>Google Ads: R$ 8.000</li>
+          <li>TikTok Ads: R$ 7.000</li>
+        </ul>
+        
+        <div class="note note-r" style="margin-top:10px;font-size:10px">
+          Para candidatos com fundo robusto buscando domínio total. Alto ROI validado em últimas 3 eleições.
+        </div>
+      </div>
+    </div>
+    
+    <div class="card" style="margin-top:18px;background:rgba(34,197,94,.05);border-color:var(--gb)">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="font-size:20px;color:var(--g)">→</div>
+        <div style="font-size:12px;line-height:1.5">
+          <strong style="color:var(--t)">O investimento em tráfego é 100% do candidato</strong> — enviado diretamente para Meta, Google e TikTok. A EstrategAI fornece a gestão profissional, otimização contínua e segmentação estratégica. <strong>Transparência total:</strong> você vê cada real sendo investido em tempo real no seu dashboard.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 14 GARANTIA (REORDENADO) -->
+<div class="slide">
+  <div style="width:100%;max-width:880px">
+    <div class="lbl">Compromisso</div>
+    <h2 style="margin-bottom:26px">Se não funcionar,<br><span class="hi">eu refaço. Grátis.</span></h2>
+    <div class="g2" style="gap:16px;margin-bottom:14px">
+      <div class="card glow">
+        <div style="font-size:12px;font-weight:700;color:var(--pl);margin-bottom:12px">O QUE GARANTIMOS</div>
+        <ul class="ok" style="gap:8px">
+          <li>Conteúdo publicado conforme o calendário acordado</li>
+          <li>Anúncios rodando e otimizados semanalmente</li>
+          <li>Central de Engajamento respondendo 24h</li>
+          <li>Relatório quinzenal entregue sem atraso</li>
+          <li>Conformidade 100% com a Resolução 23.755/TSE</li>
+        </ul>
+        <div class="note note-p" style="margin-top:14px">
+          Se qualquer item acima não for cumprido, reajustamos toda a estrutura sem custo adicional. Sem letras miúdas. O risco é nosso.
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="card">
+          <div style="font-size:12px;font-weight:700;color:var(--g);margin-bottom:10px">CONFORMIDADE TSE — GARANTIA CONTRATUAL</div>
+          <div style="font-size:12px;color:var(--m);line-height:1.6">Toda a operação é configurada dentro da Resolução 23.755/2026. A EstrategAI se responsabiliza contratualmente pela conformidade legal de todos os serviços entregues.</div>
+        </div>
+        <div class="card">
+          <div style="font-size:12px;font-weight:700;margin-bottom:10px">SOBRE A ESTRATEGAI</div>
+          <div style="font-size:12px;color:var(--m);line-height:1.6">A EstrategAI aplica Inteligência Artificial de forma estratégica em negócios e campanhas. Automatizamos processos, criamos agentes inteligentes e implementamos cultura de IA — para equipes que querem resultado mensurável, não só tecnologia bonita.</div>
+          <div class="hr" style="margin:12px 0"></div>
+          <div style="font-size:12px;color:var(--m)">📱 +55 71 98694-8358</div>
+          <div style="font-size:12px;color:var(--m);margin-top:4px">✉ estrategai.company@gmail.com</div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="background:rgba(124,58,237,.06);border-color:rgba(124,58,237,.25);text-align:center">
+      <h2 style="font-size:26px;margin-bottom:6px">Vamos começar?</h2>
+      <p style="font-size:13px;color:var(--m)">Escolha o plano → uma reunião de alinhamento → campanha digital estruturada e operando.</p>
+    </div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+let cur=0,total=15;
+const dt=document.getElementById('dots');
+for(let i=0;i<total;i++){
+  const d=document.createElement('div');
+  d.className='dot'+(i===0?' on':'');
+  d.onclick=()=>go(i);
+  dt.appendChild(d);
+}
+function upd(){
+  document.querySelectorAll('.slide').forEach((s,i)=>{
+    s.classList.remove('on','out');
+    if(i===cur)s.classList.add('on');
+    else if(i<cur)s.classList.add('out');
+  });
+  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('on',i===cur));
+  document.getElementById('sc').textContent=(cur+1)+' / '+total;
+  document.getElementById('pb').style.width=((cur+1)/total*100)+'%';
+}
+function go(n){cur=Math.max(0,Math.min(n,total-1));upd();}
+document.addEventListener('keydown',e=>{
+  if(['ArrowRight','ArrowDown',' '].includes(e.key)){e.preventDefault();go(cur+1);}
+  if(['ArrowLeft','ArrowUp'].includes(e.key)){e.preventDefault();go(cur-1);}
+});
+function brl(n){return'R$ '+n.toLocaleString('pt-BR');}
+function tog(el){
+  el.classList.toggle('sel');
+  el.querySelector('.ck').textContent=el.classList.contains('sel')?'●':'○';
+  calc();
+}
+function calc(){
+  const sel=document.querySelectorAll('.sc-card.sel');
+  let su=0,sm=0;
+  sel.forEach(c=>{su+=+c.dataset.setup;sm+=+c.dataset.monthly;});
+  document.getElementById('ts').textContent=brl(su);
+  document.getElementById('tm').innerHTML=brl(sm)+'<span style="font-size:13px;color:var(--m)">/mês</span>';
+  document.getElementById('t6').textContent=brl(su+sm*6);
+  const bh=document.getElementById('bh');
+  const saving=(su+sm*6)-(15000+5500*6);
+  if(sel.length>=3){
+    bh.style.display='block';
+    document.getElementById('bs').textContent=saving>500?'Economiza '+brl(saving)+' em 6 meses':'Tudo incluído no bundle';
+  } else bh.style.display='none';
+}
+upd();
+</script>
+</body>
+</html>
